@@ -1,0 +1,153 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="hero-overlay"></div>
+    <div class="container text-center">
+        <h1 class="hero-title">Find Your Perfect Ride</h1>
+        <p class="hero-subtitle">Premium bikes at affordable prices</p>
+        <div class="hero-buttons">
+            {% if not user.is_authenticated %}
+                <a href="{% url 'register' %}" class="btn btn-hero btn-primary">Get Started</a>
+            {% endif %}
+            <a href="#bikes" class="btn btn-hero btn-outline-light">View Bikes</a>
+        </div>
+    </div>
+</section>
+
+<!-- Featured Bikes -->
+<section class="featured-section py-5">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="section-title">Featured Bikes</h2>
+            <p class="section-subtitle">Check out our most popular rentals</p>
+        </div>
+        
+        <div class="row">
+            {% for bike in featured_bikes %}
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="featured-card card h-100 border-0 shadow-sm">
+                    {% if bike.image %}
+                        <img src="{{ bike.image.url }}" class="featured-card-img" alt="{{ bike.name }}">
+                    {% else %}
+                        <img src="https://picsum.photos/seed/bike{{ bike.pk }}/400/300" class="featured-card-img" alt="{{ bike.name }}">
+                    {% endif %}
+                    
+                    <div class="card-body">
+                        <h4 class="card-title">{{ bike.name }}</h4>
+                        <p class="text-muted">{{ bike.category.name }}</p>
+                        <p class="card-text">{{ bike.description|truncatewords:12 }}</p>
+                        
+                        <div class="price-row">
+                            <div class="price-item">
+                                <span class="price-label">Hourly</span>
+                                <span class="price-value">${{ bike.price_per_hour }}</span>
+                            </div>
+                            <div class="price-item">
+                                <span class="price-label">Daily</span>
+                                <span class="price-value">${{ bike.price_per_day }}</span>
+                            </div>
+                        </div>
+                        
+                        <a href="{% url 'bike_detail' bike.pk %}" class="btn btn-primary w-100 mt-3">
+                            View Details
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12 text-center">
+                <p>No featured bikes available yet.</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- All Bikes Section -->
+<section id="bikes" class="all-bikes-section py-5 bg-light">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="section-title">All Available Bikes</h2>
+            <p class="section-subtitle">Browse our complete fleet</p>
+        </div>
+        
+        <div class="row">
+            {% for bike in available_bikes %}
+            <div class="col-lg-3 col-md-6 mb-4">
+                <div class="bike-card card h-100 border-0 shadow-sm">
+                    {% if bike.image %}
+                        <img src="{{ bike.image.url }}" class="bike-card-img" alt="{{ bike.name }}">
+                    {% else %}
+                        <img src="https://picsum.photos/seed/bike{{ bike.pk }}/300/200" class="bike-card-img" alt="{{ bike.name }}">
+                    {% endif %}
+                    
+                    <div class="card-body">
+                        <h5 class="card-title">{{ bike.name }}</h5>
+                        <p class="text-muted small">{{ bike.category.name }}</p>
+                        
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <div>
+                                <small class="text-muted">From</small>
+                                <h6 class="mb-0 text-primary">${{ bike.price_per_hour }}/hr</h6>
+                            </div>
+                            {% if bike.is_available %}
+                                <span class="badge bg-success">Available</span>
+                            {% else %}
+                                <span class="badge bg-danger">Booked</span>
+                            {% endif %}
+                        </div>
+                        
+                        <a href="{% url 'bike_detail' bike.pk %}" class="btn btn-sm btn-outline-primary w-100">
+                            View Details
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12 text-center">
+                <div class="alert alert-info">
+                    <h4>No bikes available</h4>
+                    <p>Check back later for new arrivals!</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="features-section py-5">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="section-title">Why Choose Bike Rental?</h2>
+            <p class="section-subtitle">Experience the best bike rental service</p>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-4 text-center mb-4">
+                <div class="feature-icon">
+                    <i class="fas fa-bicycle"></i>
+                </div>
+                <h4>Quality Bikes</h4>
+                <p>Well-maintained fleet of premium bikes for all your needs</p>
+            </div>
+            <div class="col-md-4 text-center mb-4">
+                <div class="feature-icon">
+                    <i class="fas fa-dollar-sign"></i>
+                </div>
+                <h4>Affordable Rates</h4>
+                <p>Competitive pricing with flexible hourly and daily options</p>
+            </div>
+            <div class="col-md-4 text-center mb-4">
+                <div class="feature-icon">
+                    <i class="fas fa-clock"></i>
+                </div>
+                <h4>Easy Booking</h4>
+                <p>Simple online booking system with instant confirmation</p>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
